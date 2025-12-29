@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Cloud cover"
+version = "0.0.1"
+description = "Cloud cover estimation for optical images"
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Pick your license as you wish (see also "license" above)
+  "License :: OSI Approved :: MIT License",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["cloud_cover*"]
+
+[tool.setuptools.package-data]
+cloud_cover = ["**/*.sh", "**/*.txt"]
+
+[project.optional-dependencies]
+dev = [
+"Sphinx==8.2.3",
+"sphinxcontrib-applehelp==2.0.0",
+"sphinxcontrib-devhelp==2.0.0",
+"sphinxcontrib-htmlhelp==2.1.0",
+"sphinxcontrib-jsmath==1.0.1",
+"sphinxcontrib-qthelp==2.0.0",
+"sphinxcontrib-serializinghtml==2.0.0",
+"black==25.11.0",
+"flake8==7.3.0",
+"pre-commit==4.4.0"
+]
+
+[tool.black]
+line-length = 88
+
+[flake8]
+max-line-length = 88
+extend-ignore = ["E203"]
+per-file-ignores = { "__init__.py" = ["F401"] }
+
+
+[project.urls]
+Homepage = "https://github.com/GalaxEyeSpace/Cloud-Cover"
+Documentation = "https://github.com/GalaxEyeSpace/Cloud-Cover"
+Repository = "https://github.com/GalaxEyeSpace/Cloud-Cover"
+Issues = "https://github.com/GalaxEyeSpace/Cloud-Cover"
+
