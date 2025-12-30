@@ -6,7 +6,7 @@ import os
 from pyproj import CRS
 import xml.etree.ElementTree as ET
 from pyproj import Transformer
-from cloud_cover.src.threshold_mask import ThresholdMask
+from src.threshold_mask import ThresholdMask
 import matplotlib.pyplot as plt
 
 def get_sentinel_crs(safe_root):
@@ -43,6 +43,7 @@ xml_dir_path = "/home/echofusion/Downloads/S2B_MSIL1C_20251226T052139_N0511_R062
 safe_img_dir = "/home/echofusion/Downloads/S2B_MSIL1C_20251226T052139_N0511_R062_T43PER_20251226T072137 (2).SAFE/GRANULE/L1C_T43PER_A045991_20251226T053028/IMG_DATA"
 dem_path = "/home/echofusion/Hemanth/Cloud_Cover/data/S2_dem/23N_dem_2.tif"
 
+# Coastal Blue as reference band - 60m
 b1_path = find_band(safe_img_dir, "B01")   # Coastal blue 60m
 
 sentinel_crs = get_sentinel_crs(xml_dir_path)
@@ -82,7 +83,7 @@ bands["Blue"]  = resample_to_ref(find_band(safe_img_dir, "B02"), ref_profile, Re
 bands["Green"] = resample_to_ref(find_band(safe_img_dir, "B03"), ref_profile, Resampling.average)
 bands["Red"]   = resample_to_ref(find_band(safe_img_dir, "B04"), ref_profile, Resampling.average)
 bands["NIR"]   = resample_to_ref(find_band(safe_img_dir, "B08"), ref_profile, Resampling.average)
-bands["RE"]    = resample_to_ref(find_band(safe_img_dir, "B8A"), ref_profile, Resampling.average)
+bands["RE"]    = resample_to_ref(find_band(safe_img_dir, "B06"), ref_profile, Resampling.average)
 
 bands["CB"]    = B1   # Coastal blue already 60m
 
@@ -131,7 +132,7 @@ plt.title("Cloud Mask")
 plt.show()
 
 # Save cloud mask
-save_mask = r"/home/echofusion/Hemanth/Cloud_Cover/data/cloud_mask/cloud_mask_23N_new_ndvi1.tif"
+save_mask = r"/home/echofusion/Hemanth/Cloud_Cover/data/cloud_mask/cloud_mask_data2_band6_0.4.tif"
 with rasterio.open(
     save_mask,
     "w",

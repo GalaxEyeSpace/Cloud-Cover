@@ -1,6 +1,5 @@
 """Code to generate a basic cloud mask based thresholding on RGB, NIR, Coastal Blue and Red Edge bands. (Sentinel-2)"""
 
-import rasterio
 import numpy as np
 from scipy.ndimage import uniform_filter
 
@@ -69,7 +68,7 @@ class ThresholdMask:
         """
         Use thresholds to get an estimate of cloud candidates (includes snow, bright surfaces too)
         VIS > 0.25
-        NIR > 0.2
+        NIR > 0.4
         np.abs(self.NDVI) < 0.20
         np.abs(self.re_ratio - 1.0) < 0.15
         """
@@ -136,6 +135,3 @@ class ThresholdMask:
 
         return cloud.astype(np.uint8), snow.astype(np.uint8)
 
-
-
-# cloud_mask, snow_mask = ThresholdMask(img, bounds, dem).compute()
