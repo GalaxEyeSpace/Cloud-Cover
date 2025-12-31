@@ -6,7 +6,7 @@ import os
 from pyproj import CRS
 import xml.etree.ElementTree as ET
 from pyproj import Transformer
-from src.threshold_mask import ThresholdMask
+from src.physical_cloud_detection.threshold_mask import ThresholdMask
 import matplotlib.pyplot as plt
 
 def get_sentinel_crs(safe_root):

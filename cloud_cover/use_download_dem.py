@@ -1,7 +1,7 @@
 """Code to download DEM for a given image bounding box and save as TIF file. Works with Sentinel-2 data."""
 
 import rasterio
-from cloud_cover.src.download_dem import download_dem
+from src.physical_cloud_detection.download_dem import download_dem
 import geopandas as gpd
 from shapely.geometry import box
 import xml.etree.ElementTree as ET
