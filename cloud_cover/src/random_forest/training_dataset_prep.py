@@ -85,8 +85,8 @@ class RFCDDatasetBuilder:
     # --------------------------------------------------
     def save(self, out_dir):
         os.makedirs(out_dir, exist_ok=True)
-        np.save(os.path.join(out_dir, "X.npy"), self.X)
-        np.save(os.path.join(out_dir, "y.npy"), self.y)
+        np.save(os.path.join(out_dir, "X_TOA_25k.npy"), self.X)
+        np.save(os.path.join(out_dir, "y_TOA_25k.npy"), self.y)
 
 
 if __name__ == "__main__":
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         "/home/echofusion/Hemanth/Cloud_Cover/data/RFCD_Training_L8_Data/Wetlands/LC81080182014238LGN00/BC/LC81080182014238LGN00",
     ]
 
-    builder = RFCDDatasetBuilder(scene_dirs, samples_per_scene=18750)
+    builder = RFCDDatasetBuilder(scene_dirs, samples_per_scene=25000)
     X, y = builder.build()
 
-    builder.save("/home/echofusion/Hemanth/Cloud_Cover/data/RFCD_pixel_training_data")
+    builder.save("/home/echofusion/Hemanth/Cloud_Cover/data/RFCD_pixel_training_data/25k_samples")

@@ -137,3 +137,79 @@ class RandomForestCloudDetection:
         f6 = self.gabor_transform_feature()
 
         return np.concatenate([f1, f2, f3, f4, f5, f6], axis=-1)
+    
+    def predict(self):
+        if self.model is None:
+            raise ValueError("Model not loaded")
+
+        features = self.get_all_features()          # (H,W,11)
+        H, W, C = features.shape
+
+        X = features.reshape(-1, C)
+        mask = self.valid.reshape(-1)
+
+        y = np.zeros(H*W, dtype=np.uint8)
+
+        # Predict only valid pixels
+        y[mask] = self.model.predict(X[mask])
+
+        self.output_img = y.reshape(H, W)
+        return self.output_img
+
+    def predict_proba_map(self):
+        feats = self.get_all_features()        # (H,W,11)
+        H, W, C = feats.shape
+
+        X = feats.reshape(-1, C)
+
+        probs = self.model.predict_proba(X)[:, 1]   # cloud probability
+        prob_map = probs.reshape(H, W)
+
+        prob_map[~self.valid] = 0
+        return prob_map
+
+    def raw_dark_channel(self):
+        return np.minimum(np.minimum(self.red, self.green), self.blue)
+    
+    # ---------------------------------------------------------
+    # GUIDED FILTER (He et al. 2013)
+    # ---------------------------------------------------------
+    def guided_filter(self, I, p, r=30, eps=0.09):
+        I = I.astype(np.float32)
+        p = p.astype(np.float32)
+
+        mean_I  = cv2.boxFilter(I, -1, (r,r))
+        mean_p  = cv2.boxFilter(p, -1, (r,r))
+        mean_Ip = cv2.boxFilter(I*p, -1, (r,r))
+
+        cov_Ip = mean_Ip - mean_I*mean_p
+
+        mean_II = cv2.boxFilter(I*I, -1, (r,r))
+        var_I = mean_II - mean_I*mean_I
+
+        a = cov_Ip / (var_I + eps)
+        b = mean_p - a*mean_I
+
+        mean_a = cv2.boxFilter(a, -1, (r,r))
+        mean_b = cv2.boxFilter(b, -1, (r,r))
+
+        q = mean_a*I + mean_b
+        return q
+
+    # ---------------------------------------------------------
+    # RFCD FINAL OUTPUT
+    # ---------------------------------------------------------
+    def rfcd_refined(self):
+        rf_prob = self.predict_proba_map()
+
+        dark = self.raw_dark_channel()
+        dark = (dark-dark.min())/(dark.max()-dark.min()+1e-6)
+
+        refined = self.guided_filter(dark, rf_prob, 30, 0.09)
+
+        refined_255 = np.clip(refined*255,0,255).astype(np.uint8)
+
+        binary = (refined_255 >= 80).astype(np.uint8)
+        binary[~self.valid]=0
+
+        return refined_255, binary
